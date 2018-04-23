@@ -1,0 +1,12 @@
+---
+# Usage:
+#  ansible-playbook opcache-flush.yml
+
+- name: opcache-flush
+  hosts: all
+
+  tasks:
+    - name: "command: cd /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs && reset-php-cache"
+      shell: reset-php-cache
+      args:
+        chdir: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs

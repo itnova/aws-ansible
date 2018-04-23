@@ -1,0 +1,12 @@
+---
+# Usage:
+#  ansible-playbook maintenance-enable.yml
+
+- name: maintenance-enable.yml
+  hosts: all
+
+  tasks:
+    - name: "command: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar maintenance:enable"
+      shell: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar maintenance:enable
+      args:
+        chdir: /

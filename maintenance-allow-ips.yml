@@ -1,0 +1,16 @@
+---
+# Usage (flag is mandatory:
+#  ansible-playbook maintenance-allow-ips.yml -e flag1=<ip-address>
+#  note: When no tasks complete check your syntax.
+
+- name: maintenance-allow-ips.yml
+  hosts: all
+  vars:
+    flag1: "0"
+
+  tasks:
+    - name: "command: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar maintenance:allow-ips {{flag1}}"
+      shell: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar maintenance:allow-ips {{flag1 | quote }}
+      args:
+        chdir: /
+      when: flag1 != "0"

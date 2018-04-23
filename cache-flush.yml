@@ -1,0 +1,12 @@
+---
+# Usage:
+#  ansible-playbook cache-flush.yml
+
+- name: cache-flush
+  hosts: all
+
+  tasks:
+    - name: "command: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar cache:flush"
+      shell: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar cache:flush
+      args:
+        chdir: /

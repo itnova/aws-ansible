@@ -1,0 +1,12 @@
+---
+# Usage:
+#  ansible-playbook maintenance-disable.yml
+
+- name: maintenance-disable.yml
+  hosts: all
+
+  tasks:
+    - name: "command: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar maintenance:disable"
+      shell: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar maintenance:disable
+      args:
+        chdir: /
