@@ -6,7 +6,26 @@
   hosts: all
 
   tasks:
-    - name: "command: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar maintenance:disable"
-      shell: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar maintenance:disable
+
+### Will check if new EC2 instances are added in AWS, and if so load the new facts ##
+    - name: Playbook - Register local facts file
+      command: cat /etc/hsl.def
+      register: file_hsl_def
+      changed_when: false
+
+    - name: Playbook - Make the facts available for ansible
+      copy:
+        content: "[general]\n{{ file_hsl_def.stdout }}\n"
+        dest: /etc/ansible/facts.d/custom.fact
+        mode: 0644
+      become: yes
+
+    - name: Playbook - Regather facts - ansible_local
+      setup:
+        filter: ansible_local
+################################################################################
+
+    - name: "Playbook - maintenance:disable"
+      shell: "n98-magerun2.phar maintenance:disable"
       args:
-        chdir: /
+        chdir: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs"

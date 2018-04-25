@@ -11,26 +11,45 @@
     flag2: "0"
 
   tasks:
-    - name: "command: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar maintenance:enable -v"
-      shell: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:admin -v
+
+### Will check if new EC2 instances are added in AWS, and if so load the new facts ##
+    - name: Playbook - Register local facts file
+      command: cat /etc/hsl.def
+      register: file_hsl_def
+      changed_when: false
+
+    - name: Playbook - Make the facts available for ansible
+      copy:
+        content: "[general]\n{{ file_hsl_def.stdout }}\n"
+        dest: /etc/ansible/facts.d/custom.fact
+        mode: 0644
+      become: yes
+
+    - name: Playbook - Regather facts - ansible_local
+      setup:
+        filter: ansible_local
+################################################################################
+
+    - name: "Playbook - update:webnode -v"
+      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:webnode -v"
       args:
         chdir: /
       when: (flag1 == "0" and flag2 == "0")
 
-    - name: "command: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar maintenance:enable --keep-maintenance"
-      shell: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:admin -v --keep-maintenance
+    - name: "Playbook - update:webnode -v --keep-maintenance"
+      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:webnode -v --keep-maintenance"
       args:
-        chdir: /home/admin/
+        chdir: /
       when: (flag1 == "keep-maintenance" and flag2 == "0") or (flag1 == "0" and flag2 == "keep-maintenance")
 
-    - name: "command: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar maintenance:enable"
-      shell: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:admin -v --no-git
+    - name: "Playbook - update:webnode -v --no-git"
+      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:webnode -v --no-git"
       args:
-        chdir: /home/admin/
+        chdir: /
       when: (flag1 == "0" and flag2 == "no-git") or (flag1 == "no-git" and flag2 == "0")
 
-    - name: "command: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/n98-magerun2.phar maintenance:enable"
-      shell: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:admin -v --no-git --keep-maintenance
+    - name: "Playbook - update:webnode -v --no-git --keep-maintenance"
+      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:webnode -v --no-git --keep-maintenance"
       args:
-        chdir: /home/admin/
+        chdir: /
       when: (flag1 == "keep-maintenance" and flag2 == "no-git") or (flag1 == "no-git" and flag2 == "keep-maintenance")

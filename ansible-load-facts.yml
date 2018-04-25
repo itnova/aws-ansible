@@ -4,24 +4,15 @@
   hosts: all
 
   tasks:
-    - name: Playbook - Directory modification - /etc/ansible/facts.d
-      file:
-        path: /etc/ansible/facts.d
-        state: directory
-        mode: 0755
-      become: yes
-
-    - name: Playbook - Register - Contents file - /etc/hsl.def
+    - name: Playbook - Register local facts file
       command: cat /etc/hsl.def
       register: file_hsl_def
       changed_when: false
 
-    - name: Playbook - File modification - /etc/ansible/facts.d/custom.fact
+    - name: Playbook - Make the facts available for ansible
       copy:
         content: "[general]\n{{ file_hsl_def.stdout }}\n"
         dest: /etc/ansible/facts.d/custom.fact
-        owner: root
-        group: root
         mode: 0644
       become: yes
 

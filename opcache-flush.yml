@@ -6,7 +6,26 @@
   hosts: all
 
   tasks:
-    - name: "command: cd /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs && reset-php-cache"
-      shell: reset-php-cache
+
+### Will check if new EC2 instances are added in AWS, and if so load the new facts ##
+    - name: Playbook - Register local facts file
+      command: cat /etc/hsl.def
+      register: file_hsl_def
+      changed_when: false
+
+    - name: Playbook - Make the facts available for ansible
+      copy:
+        content: "[general]\n{{ file_hsl_def.stdout }}\n"
+        dest: /etc/ansible/facts.d/custom.fact
+        mode: 0644
+      become: yes
+
+    - name: Playbook - Regather facts - ansible_local
+      setup:
+        filter: ansible_local
+################################################################################
+
+    - name: "Playbook - reset-php-cache"
+      shell: "reset-php-cache"
       args:
-        chdir: /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs
+        chdir: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs"
