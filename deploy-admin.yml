@@ -23,7 +23,6 @@
         content: "[general]\n{{ file_hsl_def.stdout }}\n"
         dest: /etc/ansible/facts.d/custom.fact
         mode: 0644
-      become: yes
 
     - name: Playbook - Regather facts - ansible_local
       setup:
