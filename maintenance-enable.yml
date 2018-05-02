@@ -28,3 +28,12 @@
       shell: "n98-magerun2.phar maintenance:enable"
       args:
         chdir: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs"
+      register: shell_result
+
+    - name: "Playbook - maintenance:enable - Shell Standard Output"
+      debug:
+        var: shell_result.stdout_lines
+
+    - name: "Playbook - maintenance:enable - Shell Standard Error"
+      debug:
+        var: shell_result.stderr

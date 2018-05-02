@@ -25,10 +25,20 @@
     - name: Playbook - Regather facts - ansible_local
       setup:
         filter: ansible_local
+
 ################################################################################
 
     - name: "Playbook - maintenance:allow-ips {{flag1 | quote }}"
       shell: "n98-magerun2.phar maintenance:allow-ips {{flag1 | quote }}"
       args:
         chdir: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/"
+      register: shell_result
       when: flag1 != "0"
+
+    - name: "Playbook - maintenance:allow-ips - Shell Standard Output"
+      debug:
+        var: shell_result.stdout_lines
+
+    - name: "Playbook - maintenance:allow-ips - Shell Standard Error"
+      debug:
+        var: shell_result.stderr

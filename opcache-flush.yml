@@ -28,3 +28,12 @@
       shell: "reset-php-cache"
       args:
         chdir: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs"
+      register: shell_result
+
+    - name: "Playbook - reset-php-cache - Shell Standard Output"
+      debug:
+        var: shell_result.stdout_lines
+
+    - name: "Playbook - reset-php-cache - Shell Standard Error"
+      debug:
+        var: shell_result.stderr

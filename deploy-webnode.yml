@@ -40,24 +40,27 @@
       shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:webnode -v --keep-maintenance"
       args:
         chdir: /
+      register: shell_result
       when: (flag1 == "keep-maintenance" and flag2 == "0") or (flag1 == "0" and flag2 == "keep-maintenance")
 
     - name: "Playbook - update:webnode -v --no-git"
       shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:webnode -v --no-git"
       args:
         chdir: /
+      register: shell_result
       when: (flag1 == "0" and flag2 == "no-git") or (flag1 == "no-git" and flag2 == "0")
 
     - name: "Playbook - update:webnode -v --no-git --keep-maintenance"
       shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:webnode -v --no-git --keep-maintenance"
       args:
         chdir: /
+      register: shell_result
       when: (flag1 == "keep-maintenance" and flag2 == "no-git") or (flag1 == "no-git" and flag2 == "keep-maintenance")
 
-    - name: standard out
+    - name: "Playbook - update:webnode - Shell Standard Output"
       debug:
         var: shell_result.stdout_lines
 
-    - name: standard error
+    - name: "Playbook - update:webnode - Shell Standard Error"
       debug:
         var: shell_result.stderr
