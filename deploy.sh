@@ -1,4 +1,6 @@
 #!/bin/bash
+
+
 # This script will ssh into the first webserver and do an admin deployment, then a web deployment on all web servers.
 # This script can only be executed on the bastion host from the folder aws-ansible.
 
