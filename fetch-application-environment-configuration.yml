@@ -1,0 +1,51 @@
+---
+# Usage:
+#  ansible-playbook fetch-application-environment-configuration.yml
+
+- name: fetch-application-environment-configuration
+  hosts: 127.0.0.1
+  connection: local
+
+  tasks:
+    - name: Playbook - Register local facts file on bastion
+      command: cat /etc/hsl.def
+      register: file_hsl_def
+      changed_when: false
+
+    - name: Playbook - Make the facts available for ansible
+      copy:
+        content: "[general]\n{{ file_hsl_def.stdout }}\n"
+        dest: /etc/ansible/facts.d/custom.fact
+        mode: 0644
+
+    - name: Playbook - Make the facts available for ansible on bastion
+      copy:
+        content: "[general]\n{{ file_hsl_def.stdout }}\n"
+        dest: /etc/ansible/facts.d/custom.fact
+        mode: 0644
+
+    - name: Playbook - Regather facts - ansible_local on bastion
+      setup:
+        filter: ansible_local
+
+################################################################################
+
+    - name: "Playbook - Cleaning up target dir for application config deployment"
+      command: "rm -rf /tmp/application_config"
+
+    - name: "Playbook - fetch application config from Git"
+      command: "git clone {{ ansible_local.custom.general.git_config_repository }} /tmp/application_config"
+
+    - name: "Playbook - prepare dir"
+      command: "mkdir /tmp/application_config/current"
+
+    - name: "Playbook - prepare configuration file"
+      command: "cp /tmp/application_config/{{ ansible_local.custom.general.git_config_repository_branch }}/env.php /tmp/application_config/current/env.php"
+
+    - name: "Playbook - Shell Standard Output"
+      debug:
+        var: shell_result.stdout_lines
+
+    - name: "Playbook - Shell Standard Error"
+      debug:
+        var: shell_result.stderr

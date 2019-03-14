@@ -1,0 +1,38 @@
+---
+# Usage:
+#  ansible-playbook deploy-application-environment-file.yml
+
+- name: deploy-application-environment-file
+  hosts: all
+
+  tasks:
+    - name: Playbook - Register local facts file
+      command: cat /etc/hsl.def
+      register: file_hsl_def
+      changed_when: false
+
+    - name: Playbook - Make the facts available for ansible
+      copy:
+        content: "[general]\n{{ file_hsl_def.stdout }}\n"
+        dest: /etc/ansible/facts.d/custom.fact
+        mode: 0644
+
+    - name: Playbook - Regather facts - ansible_local
+      setup:
+        filter: ansible_local
+
+################################################################################
+
+    - name: "Playbook - copy environment file to servers"
+      copy:
+        src: "/tmp/application_config/current/env.php"
+        dest: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/app/etc/env.php"
+      register: shell_result
+
+    - name: "Playbook - Shell Standard Output"
+      debug:
+        var: shell_result.stdout_lines
+
+    - name: "Playbook - Shell Standard Error"
+      debug:
+        var: shell_result.stderr
