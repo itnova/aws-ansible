@@ -40,7 +40,7 @@
       command: "mkdir /tmp/application_config/current"
 
     - name: "Playbook - prepare configuration file"
-      command: "cp /tmp/application_config/{{ ansible_local.custom.general.git_config_repository_branch }}/env.php /tmp/application_config/current/env.php"
+      command: "cp /tmp/application_config/{{ ansible_local.custom.general.git_config_repository_path }}/env.php /tmp/application_config/current/env.php"
 
     - name: "Playbook - Shell Standard Output"
       debug:
