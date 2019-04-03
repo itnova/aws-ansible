@@ -14,6 +14,6 @@
 ansible-playbook maintenance-enable.yml
 ansible-playbook fetch-application-environment-configuration.yml
 ansible-playbook deploy-application-environment-file.yml
-ansible-playbook deploy-admin.yml -e flag1=keep-maintenance
-ansible-playbook deploy-webnode.yml -e flag1=keep-maintenance
+ansible-playbook deploy-admin.yml -e flag1=--keep-maintenance
+ansible-playbook deploy-webnode.yml -e flag1=--keep-maintenance
 ansible-playbook maintenance-disable.yml
