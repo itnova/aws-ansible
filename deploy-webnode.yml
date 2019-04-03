@@ -31,7 +31,7 @@
 ################################################################################
 
     - name: "Playbook - aws:update:webnode -v"
-      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy aws:update:webnode -v {{flag1}} {{flag2}} {{flag3}} {{flag4}}"
+      shell: "cd /var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs && bin/deploy aws:update:webnode -v {{flag1}} {{flag2}} {{flag3}} {{flag4}}"
       args:
         chdir: /
       register: shell_result
