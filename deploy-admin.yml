@@ -8,8 +8,10 @@
   #select only the first host.
   hosts: all[0]
   vars:
-    flag1: "0"
-    flag2: "0"
+    flag1: ""
+    flag2: ""
+    flag3: ""
+    flag4: ""
 
   tasks:
 ### Will check if new EC2 instances are added in AWS, and if so load the new facts ##
@@ -29,38 +31,16 @@
         filter: ansible_local
 ################################################################################
 
-    - name: "Playbook - update:admin -v"
-      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:admin -v"
+    - name: "Playbook - aws:update:admin -v"
+      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy aws:update:admin -v {{flag1}} {{flag2}} {{flag3}} {{flag4}}"
       args:
         chdir: /
       register: shell_result
-      when: (flag1 == "0" and flag2 == "0")
 
-    - name: "Playbook - update:admin -v --keep-maintenance"
-      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:admin -v --keep-maintenance"
-      args:
-        chdir: /
-      register: shell_result
-      when: (flag1 == "keep-maintenance" and flag2 == "0") or (flag1 == "0" and flag2 == "keep-maintenance")
-
-    - name: "Playbook - update:admin -v --no-git"
-      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:admin -v --no-git"
-      args:
-        chdir: /
-      register: shell_result
-      when: (flag1 == "0" and flag2 == "no-git") or (flag1 == "no-git" and flag2 == "0")
-
-    - name: "Playbook - update:admin -v --no-git --keep-maintenance"
-      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:admin -v --no-git --keep-maintenance"
-      args:
-        chdir: /
-      register: shell_result
-      when: (flag1 == "keep-maintenance" and flag2 == "no-git") or (flag1 == "no-git" and flag2 == "keep-maintenance")
-
-    - name: "Playbook - update:admin - Shell Standard Output"
+    - name: "Playbook - aws:update:admin - Shell Standard Output"
       debug:
         var: shell_result.stdout_lines
 
-    - name: "Playbook - update:admin - Shell Standard Error"
+    - name: "Playbook - aws:update:admin - Shell Standard Error"
       debug:
         var: shell_result.stderr

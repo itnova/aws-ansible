@@ -7,11 +7,12 @@
 - name: deploy-webnode.yml
   hosts: all
   vars:
-    flag1: "0"
-    flag2: "0"
+    flag1: ""
+    flag2: ""
+    flag3: ""
+    flag4: ""
 
   tasks:
-
 ### Will check if new EC2 instances are added in AWS, and if so load the new facts ##
     - name: Playbook - Register local facts file
       command: cat /etc/hsl.def
@@ -29,38 +30,16 @@
         filter: ansible_local
 ################################################################################
 
-    - name: "Playbook - update:webnode -v"
-      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:webnode -v"
+    - name: "Playbook - aws:update:webnode -v"
+      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy aws:update:webnode -v {{flag1}} {{flag2}} {{flag3}} {{flag4}}"
       args:
         chdir: /
       register: shell_result
-      when: (flag1 == "0" and flag2 == "0")
 
-    - name: "Playbook - update:webnode -v --keep-maintenance"
-      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:webnode -v --keep-maintenance"
-      args:
-        chdir: /
-      register: shell_result
-      when: (flag1 == "keep-maintenance" and flag2 == "0") or (flag1 == "0" and flag2 == "keep-maintenance")
-
-    - name: "Playbook - update:webnode -v --no-git"
-      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:webnode -v --no-git"
-      args:
-        chdir: /
-      register: shell_result
-      when: (flag1 == "0" and flag2 == "no-git") or (flag1 == "no-git" and flag2 == "0")
-
-    - name: "Playbook - update:webnode -v --no-git --keep-maintenance"
-      shell: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/bin/deploy update:webnode -v --no-git --keep-maintenance"
-      args:
-        chdir: /
-      register: shell_result
-      when: (flag1 == "keep-maintenance" and flag2 == "no-git") or (flag1 == "no-git" and flag2 == "keep-maintenance")
-
-    - name: "Playbook - update:webnode - Shell Standard Output"
+    - name: "Playbook - aws:update:webnode - Shell Standard Output"
       debug:
         var: shell_result.stdout_lines
 
-    - name: "Playbook - update:webnode - Shell Standard Error"
+    - name: "Playbook - aws:update:webnode - Shell Standard Error"
       debug:
         var: shell_result.stderr
