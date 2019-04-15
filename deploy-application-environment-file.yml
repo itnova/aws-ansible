@@ -29,6 +29,12 @@
         dest: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/app/etc/env.php"
       register: shell_result
 
+    - name: "Playbook - reset-php-cache"
+      shell: "reset-php-cache"
+      args:
+        chdir: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs"
+      register: shell_result
+
     - name: "Playbook - Shell Standard Output"
       debug:
         var: shell_result.stdout_lines
