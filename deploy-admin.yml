@@ -6,7 +6,7 @@
 
 - name: deploy-admin.yml
   #select only the first host.
-  hosts: all[0]
+  hosts: tag_Role_Webserver[0]
   vars:
     flag1: ""
     flag2: ""
