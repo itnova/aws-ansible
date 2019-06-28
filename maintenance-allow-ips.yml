@@ -28,8 +28,8 @@
 
 ################################################################################
 
-    - name: "Playbook - maintenance:allow-ips {{flag1 | quote }}"
-      shell: "n98-magerun2.phar maintenance:allow-ips {{flag1 | quote }}"
+    - name: "Playbook - maintenance:allow-ips {{ flag1 }}"
+      shell: "n98-magerun2.phar maintenance:allow-ips {{ flag1 }}"
       args:
         chdir: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/"
       register: shell_result
