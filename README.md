@@ -10,6 +10,8 @@ ansible-playbook deploy-admin.yml -e flag1=keep-maintenance -e flag2=no-git [fla
 ansible-playbook deploy-webnode.yml -e flag1=keep-maintenance -e flag2=no-git [flags are optional]
 
 ansible-playbook maintenance-allow-ips.yml -e flag1=<ip-address> [flag is mandatory]
+  
+ansible-playbook maintenance-allow-ips.yml -e 'flag1="87.213.39.106 144.2.254.2"'
 
 ansible-playbook maintenance-disable.yml
 
