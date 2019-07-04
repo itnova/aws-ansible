@@ -3,7 +3,7 @@
 #  ansible-playbook git-hard-reset.yml
 
 - name: git-hard-reset
-  hosts: all
+  hosts: all,localhost
 
   tasks:
 

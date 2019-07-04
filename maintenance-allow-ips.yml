@@ -4,7 +4,7 @@
 #  note: When no tasks complete check your syntax.
 
 - name: maintenance-allow-ips.yml
-  hosts: all
+  hosts: all,localhost
   vars:
     flag1: "0"
 

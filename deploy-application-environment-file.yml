@@ -3,7 +3,7 @@
 #  ansible-playbook deploy-application-environment-file.yml
 
 - name: deploy-application-environment-file
-  hosts: all
+  hosts: all,localhost
 
   tasks:
     - name: Playbook - Register local facts file

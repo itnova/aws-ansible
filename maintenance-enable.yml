@@ -3,7 +3,7 @@
 #  ansible-playbook maintenance-enable.yml
 
 - name: maintenance-enable.yml
-  hosts: all
+  hosts: all,localhost
 
   tasks:
 

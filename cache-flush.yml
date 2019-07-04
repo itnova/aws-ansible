@@ -3,7 +3,7 @@
 #  ansible-playbook cache-flush.yml
 
 - name: cache-flush
-  hosts: all
+  hosts: all,localhost
 
   tasks:
 

@@ -1,7 +1,7 @@
 ---
 # Will gather the local facts for ansible
 - name: ansible-load-facts.yml
-  hosts: all
+  hosts: all,localhost
 
   tasks:
     - name: Playbook - Register local facts file

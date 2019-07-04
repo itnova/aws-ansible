@@ -3,7 +3,7 @@
 #  ansible-playbook git-pull.yml
 
 - name: git-pull.yml
-  hosts: all
+  hosts: all,localhost
 
   tasks:
 ### Will check if new EC2 instances are added in AWS, and if so load the new facts ##
