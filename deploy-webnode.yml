@@ -5,7 +5,7 @@
 #  note: When no tasks complete check your syntax.
 
 - name: deploy-webnode.yml
-  hosts: all,localhost,localhost
+  hosts: all,localhost
   vars:
     flag1: ""
     flag2: ""
