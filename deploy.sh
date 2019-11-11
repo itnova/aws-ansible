@@ -5,6 +5,6 @@
 # This script can only be executed on the bastion host from the folder aws-ansible.
 
 ansible-playbook maintenance-enable.yml
-ansible-playbook deploy-admin.yml -e flag1=--keep-maintenance
-ansible-playbook deploy-webnode.yml -e flag1=--keep-maintenance
+ansible-playbook deploy-admin.yml -e flag1=--keep-maintenance -e flag2=--no-cache-flush
+ansible-playbook deploy-webnode.yml -e flag1=--keep-maintenance -e flag2=--no-cache-flush
 ansible-playbook maintenance-disable.yml
