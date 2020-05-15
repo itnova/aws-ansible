@@ -1,0 +1,38 @@
+# Usage:
+#  ansible-playbook deploy-config.yml
+
+- name: deploy-config.yml
+  hosts: localhost
+
+  tasks:
+
+### Will check if new EC2 instances are added in AWS, and if so load the new facts ##
+    - name: Playbook - Register local facts file
+      command: cat /etc/hsl.def
+      register: file_hsl_def
+      changed_when: false
+
+    - name: Playbook - Make the facts available for ansible
+      copy:
+        content: "[general]\n{{ file_hsl_def.stdout }}\n"
+        dest: /etc/ansible/facts.d/custom.fact
+        mode: 0644
+
+    - name: Playbook - Regather facts - ansible_local
+      setup:
+        filter: ansible_local
+################################################################################
+
+    - name: "Playbook - Deploy config"
+      shell: "bin/magento app:config:import -v"
+      args:
+        chdir: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs"
+      register: shell_result
+
+    - name: "Playbook - Deploy config - Shell Standard Output"
+      debug:
+        var: shell_result.stdout_lines
+
+    - name: "Playbook - Deploy config - Shell Standard Error"
+      debug:
+        var: shell_result.stderr

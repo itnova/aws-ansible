@@ -1,0 +1,56 @@
+# Usage
+# ansible-playbook checkout-tag.yml -e -tag=<git tag>
+#  note: tag is required
+
+- name: checkout-tag.yml
+  hosts: all,localhost
+  vars:
+    tag: false
+  tasks:
+    ### Check required variables
+    - name: Check variable
+      fail: msg="Variable tag is required"
+      when: not tag
+
+    ### Will check if new EC2 instances are added in AWS, and if so load the new facts ##
+    - name: Playbook - Register local facts file
+      command: cat /etc/hsl.def
+      register: file_hsl_def
+      changed_when: false
+
+    - name: Playbook - Make the facts available for ansible
+      copy:
+        content: "[general]\n{{ file_hsl_def.stdout }}\n"
+        dest: /etc/ansible/facts.d/custom.fact
+        mode: 0644
+
+    - name: Playbook - Regather facts - ansible_local
+      setup:
+        filter: ansible_local
+    ################################################################################
+  
+    - name: "Playbook - Checkout Tag - Fetch Git Changes"
+      shell: "git fetch"
+      args:
+        chdir: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs"
+      register: shell_result
+
+    - name: "Playbook - Checkout Tag - Checkout tag {{ tag }}"
+      shell: "git checkout -f tags/{{ tag }}"
+      args:
+        chdir: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs"
+      register: shell_result
+
+    - name: "Playbook - reset-php-cache"
+      shell: "reset-php-cache"
+      args:
+        chdir: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs"
+      register: shell_result
+
+    - name: "Playbook - Checkout Tag - Shell Standard Output"
+      debug:
+        var: shell_result.stdout_lines
+
+    - name: "Playbook - Checkout Tag - Shell Standard Error"
+      debug:
+        var: shell_result.stderr
