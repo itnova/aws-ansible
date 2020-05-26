@@ -19,7 +19,7 @@ done
 
 ansible-playbook maintenance-enable.yml
 if [ "$opt_tag" ]
-them
+then
   echo "Tag $opt_tag will be checkout."
   ansible-playbook checkout-tag.yml -e tag=$opt_tag
 else
