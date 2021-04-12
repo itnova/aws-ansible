@@ -1,5 +1,5 @@
 # Usage
-# ansible-playbook checkout-tag.yml -e -tag=<git tag>
+# ansible-playbook checkout-tag.yml -e tag=<git tag>
 #  note: tag is required
 
 - name: checkout-tag.yml
