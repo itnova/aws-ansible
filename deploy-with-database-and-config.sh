@@ -30,4 +30,8 @@ ansible-playbook deploy-application-environment-file.yml
 ansible-playbook deploy-database-and-config.yml
 ansible-playbook deploy-js-translation.yml
 ansible-playbook generate-critical-css.yml
+
+# will skip if spstorefront directory is missing
+ansible-playbook deploy-pwa.yml
+
 ansible-playbook cache-flush.yml
