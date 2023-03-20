@@ -34,19 +34,31 @@
 
     - name: "Playbook - Cleaning up target dir for application config deployment"
       command: "rm -rf /tmp/application_config"
+      register: shell_result
+
+    - name: "Playbook - Shell Standard Error"
+      debug:
+        var: shell_result.stderr
 
     - name: "Playbook - fetch application config from Git"
       command: "git clone {{ ansible_local.custom.general.git_config_repository }} /tmp/application_config"
+      register: shell_result
+
+    - name: "Playbook - Shell Standard Error"
+      debug:
+        var: shell_result.stderr
 
     - name: "Playbook - prepare dir"
       command: "mkdir /tmp/application_config/current"
+      register: shell_result
+
+    - name: "Playbook - Shell Standard Error"
+      debug:
+        var: shell_result.stderr
 
     - name: "Playbook - prepare configuration file"
       command: "cp /tmp/application_config/{{ ansible_local.custom.general.git_config_repository_path }}/env.php /tmp/application_config/current/env.php"
-
-    - name: "Playbook - Shell Standard Output"
-      debug:
-        var: shell_result.stdout_lines
+      register: shell_result
 
     - name: "Playbook - Shell Standard Error"
       debug:
