@@ -1,0 +1,42 @@
+---
+# Usage:
+#  ansible-playbook deploy-pwa-environment-file.yml
+
+- name: deploy-pwa-environment-file
+  hosts: all,localhost
+
+  tasks:
+    - name: Playbook - Register local facts file
+      command: cat /etc/hsl.def
+      register: file_hsl_def
+      changed_when: false
+
+    - name: Playbook - Make the facts available for ansible
+      copy:
+        content: "[general]\n{{ file_hsl_def.stdout }}\n"
+        dest: /etc/ansible/facts.d/custom.fact
+        mode: 0644
+
+    - name: Playbook - Regather facts - ansible_local
+      setup:
+        filter: ansible_local
+
+################################################################################
+
+    - name: "Playbook - check pwa directory"
+      shell: "if [ -d spstorefront ]; then echo 'true'; else echo 'false'; fi"
+      args:
+        chdir: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs"
+      register: pwadir
+
+    - name: "Playbook - Copy pwa environment file to servers"
+      copy:
+        src: "/tmp/pwa_application_config/current/.env"
+        dest: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs/spstorefront/.env"
+      register: shell_result
+      when: pwadir.stdout == "true"
+
+    - name: "Playbook - Shell Standard Error"
+      debug:
+        var: shell_result.stderr
+      when: pwadir.stdout == "true"

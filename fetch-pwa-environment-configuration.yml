@@ -1,0 +1,79 @@
+---
+# Usage:
+#  ansible-playbook fetch-pwa-environment-configuration.yml
+
+- name: fetch-pwa-environment-configuration
+  hosts: 127.0.0.1
+  connection: local
+
+  tasks:
+    - name: Playbook - Register local facts file on bastion
+      command: cat /etc/hsl.def
+      register: file_hsl_def
+      changed_when: false
+
+    - name: Playbook - Make the facts available for ansible
+      copy:
+        content: "[general]\n{{ file_hsl_def.stdout }}\n"
+        dest: /etc/ansible/facts.d/custom.fact
+        mode: 0644
+
+    - name: Playbook - Make the facts available for ansible on bastion
+      copy:
+        content: "[general]\n{{ file_hsl_def.stdout }}\n"
+        dest: /etc/ansible/facts.d/custom.fact
+        mode: 0644
+
+    - name: Playbook - Regather facts - ansible_local on bastion
+      setup:
+        filter: ansible_local
+
+################################################################################
+# Fetching PWA environment configuration
+################################################################################
+
+    - name: "Playbook - check pwa directory"
+      shell: "if [ -d spstorefront ]; then echo 'true'; else echo 'false'; fi"
+      args:
+        chdir: "/var/www/vhosts/{{ ansible_local.custom.general.customer_name }}/httpdocs"
+      register: pwadir
+
+    - name: "Playbook - Cleaning up target dir for pwa config deployment"
+      command: "rm -rf /tmp/pwa_application_config"
+      register: shell_result
+      when: pwadir.stdout == "true"
+
+    - name: "Playbook - Shell Standard Error"
+      debug:
+        var: shell_result.stderr
+      when: pwadir.stdout == "true"
+
+    - name: "Playbook - Fetch pwa environment file from Git"
+      command: "git clone {{ ansible_local.custom.general.git_config_repository }} /tmp/pwa_application_config"
+      register: shell_result
+      when: pwadir.stdout == "true"
+
+    - name: "Playbook - Shell Standard Error"
+      debug:
+        var: shell_result.stderr
+      when: pwadir.stdout == "true"
+
+    - name: "Playbook - Prepare pwa environment config dir"
+      command: "mkdir /tmp/pwa_application_config/current"
+      register: shell_result
+      when: pwadir.stdout == "true"
+
+    - name: "Playbook - Shell Standard Error"
+      debug:
+        var: shell_result.stderr
+      when: pwadir.stdout == "true"
+
+    - name: "Playbook - Prepare pwa environment file"
+      command: "cp /tmp/pwa_application_config/{{ ansible_local.custom.general.git_config_repository_path }}/spstorefront/.env /tmp/pwa_application_config/current/.env"
+      register: shell_result
+      when: pwadir.stdout == "true"
+
+    - name: "Playbook - Shell Standard Error"
+      debug:
+        var: shell_result.stderr
+      when: pwadir.stdout == "true"
