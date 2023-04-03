@@ -30,9 +30,12 @@ ansible-playbook generate-critical-css.yml
 # Run PWA if spstorefront directory exists
 if [ -d ../httpdocs/spstorefront ]
 then
+  echo "Deploy PWA"
   ansible-playbook fetch-pwa-environment-configuration.yml
   ansible-playbook deploy-pwa-environment-file.yml
   ansible-playbook deploy-pwa.yml
+else
+  echo "Skip PWA deploy"
 fi
 
 ansible-playbook cache-flush.yml
