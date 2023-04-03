@@ -27,7 +27,12 @@ fi
 ansible-playbook deploy-js-translation.yml
 ansible-playbook generate-critical-css.yml
 
-# will skip if spstorefront directory is missing
-ansible-playbook deploy-pwa.yml
+# Run PWA if spstorefront directory exists
+if [ -d ../httpdocs/spstorefront ]
+then
+  ansible-playbook fetch-pwa-environment-configuration.yml
+  ansible-playbook deploy-pwa-environment-file.yml
+  ansible-playbook deploy-pwa.yml
+fi
 
 ansible-playbook cache-flush.yml
