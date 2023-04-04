@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # This script will:
-# - Enable maintenance
-# - pulls the latest changes from Github or checkouts a specific tag (passed with -t)
-# - Deploys js translations on all web nodes
-# - Generate critical css on all web nodes
+# - Pull the latest changes from Github or checkouts a specific tag (passed with -t)
+# - Deploy the spstorefront (pwa) .env file from a shared repository
+# - Deploy the spstorefront (pwa) application
+# - Flush the cache
 
 while getopts ":t:" opt; do
   case $opt in
